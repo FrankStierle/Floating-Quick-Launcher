@@ -9,7 +9,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.graphics.PixelFormat
-import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
@@ -82,7 +81,7 @@ class OverlayService : Service() {
             contentDescription = getString(R.string.overlay_button_description)
             minWidth = minimumSize
             minHeight = minimumSize
-            setOnClickListener { launchBrowser() }
+            setOnClickListener { launchCalendar() }
         }
         val layoutParams = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -117,9 +116,9 @@ class OverlayService : Service() {
         }
     }
 
-    private fun launchBrowser() {
+    private fun launchCalendar() {
         try {
-            startActivity(createBrowserIntent())
+            startActivity(createCalendarIntent())
         } catch (_: ActivityNotFoundException) {
             showLaunchError()
         } catch (_: SecurityException) {
@@ -163,9 +162,11 @@ class OverlayService : Service() {
     }
 }
 
-internal fun createBrowserIntent(): Intent {
-    return Intent(Intent.ACTION_VIEW, Uri.parse("https://example.com")).apply {
-        addCategory(Intent.CATEGORY_BROWSABLE)
+internal fun createCalendarIntent(): Intent {
+    return Intent.makeMainSelectorActivity(
+        Intent.ACTION_MAIN,
+        Intent.CATEGORY_APP_CALENDAR,
+    ).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 }

@@ -68,12 +68,12 @@ class AppLaunchTest {
     }
 
     @Test
-    fun browserIntentCanLaunchFromServiceContext() {
-        val intent = createBrowserIntent()
+    fun calendarIntentCanLaunchFromServiceContext() {
+        val intent = createCalendarIntent()
 
-        assertEquals(Intent.ACTION_VIEW, intent.action)
-        assertEquals("https", intent.data?.scheme)
-        assertTrue(intent.hasCategory(Intent.CATEGORY_BROWSABLE))
+        assertEquals(Intent.ACTION_MAIN, intent.action)
+        assertEquals(Intent.ACTION_MAIN, intent.selector?.action)
+        assertTrue(intent.selector?.hasCategory(Intent.CATEGORY_APP_CALENDAR) == true)
         assertTrue(intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
     }
 }
