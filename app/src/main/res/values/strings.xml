@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Floating Quick Launcher</string>
+    <string name="external_app_unavailable">No browser is available</string>
     <string name="foreground_service_subtype">Displays the user-requested floating quick-launcher control</string>
     <string name="notification_permission_title">Notification permission</string>
     <string name="open_overlay_settings">Open overlay settings</string>
+    <string name="overlay_button_description">Floating quick-launcher button</string>
+    <string name="overlay_button_label">Launch</string>
     <string name="overlay_service_channel_name">Floating launcher</string>
     <string name="overlay_service_notification_text">The floating launcher service is active</string>
     <string name="overlay_service_notification_title">Floating Quick Launcher</string>

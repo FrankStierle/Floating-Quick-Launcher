@@ -1,10 +1,12 @@
 package com.example.floatingquicklauncher
 
+import android.content.Intent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -63,5 +65,15 @@ class AppLaunchTest {
 
         assertTrue(serviceStarted)
         assertTrue(serviceStopped)
+    }
+
+    @Test
+    fun browserIntentCanLaunchFromServiceContext() {
+        val intent = createBrowserIntent()
+
+        assertEquals(Intent.ACTION_VIEW, intent.action)
+        assertEquals("https", intent.data?.scheme)
+        assertTrue(intent.hasCategory(Intent.CATEGORY_BROWSABLE))
+        assertTrue(intent.flags and Intent.FLAG_ACTIVITY_NEW_TASK != 0)
     }
 }
