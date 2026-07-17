@@ -21,12 +21,14 @@ class AppLaunchTest {
         var notificationPermissionRequested = false
 
         composeRule.setContent {
-            PermissionScreen(
+            LauncherScreen(
                 overlayPermissionGranted = false,
                 notificationPermissionRequired = true,
                 notificationPermissionGranted = false,
                 onOpenOverlaySettings = { overlaySettingsOpened = true },
                 onRequestNotificationPermission = { notificationPermissionRequested = true },
+                onStartService = {},
+                onStopService = {},
             )
         }
 
@@ -40,16 +42,26 @@ class AppLaunchTest {
 
     @Test
     fun notificationActionIsHiddenWhenPermissionIsNotRequired() {
+        var serviceStarted = false
+        var serviceStopped = false
+
         composeRule.setContent {
-            PermissionScreen(
+            LauncherScreen(
                 overlayPermissionGranted = true,
                 notificationPermissionRequired = false,
                 notificationPermissionGranted = true,
                 onOpenOverlaySettings = {},
                 onRequestNotificationPermission = {},
+                onStartService = { serviceStarted = true },
+                onStopService = { serviceStopped = true },
             )
         }
 
         composeRule.onNodeWithText("Not required on this Android version").assertIsDisplayed()
+        composeRule.onNodeWithText("Start service").performClick()
+        composeRule.onNodeWithText("Stop service").performClick()
+
+        assertTrue(serviceStarted)
+        assertTrue(serviceStopped)
     }
 }

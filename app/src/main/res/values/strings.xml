@@ -1,10 +1,18 @@
 <resources>
     <string name="app_name">Floating Quick Launcher</string>
+    <string name="foreground_service_subtype">Displays the user-requested floating quick-launcher control</string>
     <string name="notification_permission_title">Notification permission</string>
     <string name="open_overlay_settings">Open overlay settings</string>
+    <string name="overlay_service_channel_name">Floating launcher</string>
+    <string name="overlay_service_notification_text">The floating launcher service is active</string>
+    <string name="overlay_service_notification_title">Floating Quick Launcher</string>
     <string name="overlay_permission_title">Display over other apps</string>
     <string name="permission_granted">Granted</string>
     <string name="permission_not_granted">Not granted</string>
     <string name="permission_not_required">Not required on this Android version</string>
     <string name="request_notification_permission">Allow notifications</string>
+    <string name="service_controls_title">Foreground service</string>
+    <string name="service_requires_overlay_permission">Grant display-over-other-apps permission before starting the service.</string>
+    <string name="start_service">Start service</string>
+    <string name="stop_service">Stop service</string>
 </resources>

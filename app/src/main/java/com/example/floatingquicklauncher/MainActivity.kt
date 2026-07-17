@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,12 +56,14 @@ class MainActivity : ComponentActivity() {
         refreshPermissionState()
         setContent {
             FloatingQuickLauncherTheme {
-                PermissionScreen(
+                LauncherScreen(
                     overlayPermissionGranted = overlayPermissionGranted,
                     notificationPermissionRequired = isNotificationPermissionRequired,
                     notificationPermissionGranted = notificationPermissionGranted,
                     onOpenOverlaySettings = ::openOverlaySettings,
                     onRequestNotificationPermission = ::requestNotificationPermission,
+                    onStartService = ::startOverlayService,
+                    onStopService = ::stopOverlayService,
                 )
             }
         }
@@ -94,15 +99,27 @@ class MainActivity : ComponentActivity() {
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
+
+    private fun startOverlayService() {
+        if (Settings.canDrawOverlays(this)) {
+            ContextCompat.startForegroundService(this, Intent(this, OverlayService::class.java))
+        }
+    }
+
+    private fun stopOverlayService() {
+        stopService(Intent(this, OverlayService::class.java))
+    }
 }
 
 @Composable
-internal fun PermissionScreen(
+internal fun LauncherScreen(
     overlayPermissionGranted: Boolean,
     notificationPermissionRequired: Boolean,
     notificationPermissionGranted: Boolean,
     onOpenOverlaySettings: () -> Unit,
     onRequestNotificationPermission: () -> Unit,
+    onStartService: () -> Unit,
+    onStopService: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -111,6 +128,7 @@ internal fun PermissionScreen(
         Column(
             modifier = Modifier
                 .safeDrawingPadding()
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -136,6 +154,23 @@ internal fun PermissionScreen(
                 Button(onClick = onRequestNotificationPermission) {
                     Text(text = stringResource(R.string.request_notification_permission))
                 }
+            }
+
+            Text(
+                text = stringResource(R.string.service_controls_title),
+                style = MaterialTheme.typography.titleMedium,
+            )
+            if (!overlayPermissionGranted) {
+                Text(text = stringResource(R.string.service_requires_overlay_permission))
+            }
+            Button(
+                onClick = onStartService,
+                enabled = overlayPermissionGranted,
+            ) {
+                Text(text = stringResource(R.string.start_service))
+            }
+            OutlinedButton(onClick = onStopService) {
+                Text(text = stringResource(R.string.stop_service))
             }
         }
     }
@@ -164,14 +199,16 @@ private fun PermissionStatus(
 
 @Preview(showBackground = true)
 @Composable
-private fun PermissionScreenPreview() {
+private fun LauncherScreenPreview() {
     FloatingQuickLauncherTheme {
-        PermissionScreen(
+        LauncherScreen(
             overlayPermissionGranted = false,
             notificationPermissionRequired = true,
             notificationPermissionGranted = false,
             onOpenOverlaySettings = {},
             onRequestNotificationPermission = {},
+            onStartService = {},
+            onStopService = {},
         )
     }
 }
